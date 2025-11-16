@@ -12,10 +12,22 @@ app.get('/health', (req: Request, res: Response) => {
 
 app.get('/company', async (req: Request, res: Response) => {
   const cookieString: string = String(process.env.LI_COOKIE_STRING)
-
+  const requiredApiKey: string = String(process.env.X_API_KEY)
+  
   const { companyUniName } = req.query
+  const xApiKey = req.headers['x-api-key'] as string | undefined
+
+  if (Array.isArray(xApiKey)) {
+    return res.status(400).json({ status: 'error', message: 'Invalid x-api-key header format.' })
+  }
+  if (!xApiKey) {
+    return res.status(400).json({ status: 'error', message: 'no x-api-key header was provided.' })
+  }
+  if (xApiKey !== requiredApiKey.toString()) {
+    return res.status(401).json({ status: 'error', message: 'not authorized.' })
+  }
   if (!companyUniName) {
-    return res.json({ status: 'error', message: 'companyUniName is required.' }).status(409)
+    return res.status(409).json({ status: 'error', message: 'companyUniName is required.' })
   }
   try {
     const response = await fetch(`https://www.linkedin.com/voyager/api/organization/companies?decorationId=com.linkedin.voyager.deco.organization.web.WebFullCompanyMain-28&q=universalName&universalName=${companyUniName}`, {
