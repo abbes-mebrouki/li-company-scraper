@@ -7,7 +7,7 @@ app.disable('x-powered-by')
 app.use(express.json())
 
 app.get('/health', (req: Request, res: Response) => {
-  res.json({ status: 'ok' })
+  res.json({ status: 'ok', reqDataTime: Date.now()})
 })
 
 app.get('/company', async (req: Request, res: Response) => {
