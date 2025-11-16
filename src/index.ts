@@ -7,14 +7,14 @@ app.disable('x-powered-by')
 app.use(express.json())
 
 app.get('/health', (req: Request, res: Response) => {
-  res.json({ status: 'ok', reqDataTime: Date.now()})
+  res.json({ status: 'ok', reqDataTime: Date.now() })
 })
 
 app.get('/company', async (req: Request, res: Response) => {
   const cookieString: string = String(process.env.LI_COOKIE_STRING)
   const requiredApiKey: string = String(process.env.X_API_KEY)
-  
-  const { companyUniName } = req.query
+
+  const { companyUniName, includeRawData } = req.query
   const xApiKey = req.headers['x-api-key'] as string | undefined
 
   if (Array.isArray(xApiKey)) {
@@ -65,7 +65,7 @@ app.get('/company', async (req: Request, res: Response) => {
       return res.status(409).json({ status: 'error', message: "request failed.", cookieString })
     }
 
-    res.json({ status: 'ok', companyInfo, rawData: data })
+    res.json({ status: 'ok', companyInfo, rawData: includeRawData ? data : null })
   } catch (error) {
     console.error('/company error: ', error)
   }
