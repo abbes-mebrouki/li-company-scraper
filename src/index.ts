@@ -11,7 +11,7 @@ app.get('/health', (req: Request, res: Response) => {
 })
 
 app.get('/company', async (req: Request, res: Response) => {
-  const cookieString: string = String(process.env.cookieString)
+  const cookieString: string = String(process.env.LI_COOKIE_STRING)
 
   const { companyUniName } = req.query
   if (!companyUniName) {
@@ -33,7 +33,7 @@ app.get('/company', async (req: Request, res: Response) => {
         "sec-fetch-site": "same-origin",
         "x-li-lang": "en_US",
         "x-restli-protocol-version": "2.0.0",
-        "cookie": cookieString,
+        "cookie": `${cookieString}`,
         "Referer": "https://www.linkedin.com/company/priority-title-escrow/?trk=public_jobs_topcard-org-name"
       },
       "body": null,
